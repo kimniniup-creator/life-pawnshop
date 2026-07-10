@@ -1,0 +1,134 @@
+[
+  {
+    "t": 2.3,
+    "ev": "landing"
+  },
+  {
+    "t": 3.8,
+    "ev": "room-created:6900"
+  },
+  {
+    "t": 5.9,
+    "ev": "friends-joined"
+  },
+  {
+    "t": 10,
+    "ev": "game-start"
+  },
+  {
+    "t": 10.5,
+    "ev": "pick-start"
+  },
+  {
+    "t": 19.6,
+    "ev": "pick-mycat"
+  },
+  {
+    "t": 20.8,
+    "ev": "pick-done"
+  },
+  {
+    "t": 21.3,
+    "ev": "auction-稀有牌暗拍 · 第 1 / 3 件"
+  },
+  {
+    "t": 24.1,
+    "ev": "auction-稀有牌暗拍 · 第 2 / 3 件"
+  },
+  {
+    "t": 26.6,
+    "ev": "auction-稀有牌暗拍 · 第 3 / 3 件"
+  },
+  {
+    "t": 29.3,
+    "ev": "my-op"
+  },
+  {
+    "t": 32.4,
+    "ev": "guess"
+  },
+  {
+    "t": 34.5,
+    "ev": "guess"
+  },
+  {
+    "t": 37,
+    "ev": "redeem-pass-1"
+  },
+  {
+    "t": 39.7,
+    "ev": "guess"
+  },
+  {
+    "t": 42.6,
+    "ev": "my-drama-pawn-1"
+  },
+  {
+    "t": 46.3,
+    "ev": "guess"
+  },
+  {
+    "t": 48,
+    "ev": "redeem-pass-2"
+  },
+  {
+    "t": 65.4,
+    "ev": "guess"
+  },
+  {
+    "t": 76.3,
+    "ev": "my-drama-endure-2"
+  },
+  {
+    "t": 80.1,
+    "ev": "guess"
+  },
+  {
+    "t": 82.5,
+    "ev": "redeem-pass-3"
+  },
+  {
+    "t": 84.5,
+    "ev": "guess"
+  },
+  {
+    "t": 88.9,
+    "ev": "guess"
+  },
+  {
+    "t": 114.2,
+    "ev": "redeem-pass-4"
+  },
+  {
+    "t": 116.2,
+    "ev": "guess"
+  },
+  {
+    "t": 118.9,
+    "ev": "my-drama-pawn-3"
+  },
+  {
+    "t": 123,
+    "ev": "guess"
+  },
+  {
+    "t": 124.7,
+    "ev": "redeem-pass-5"
+  },
+  {
+    "t": 127.4,
+    "ev": "finale"
+  },
+  {
+    "t": 225.1,
+    "ev": "bios-ready"
+  },
+  {
+    "t": 231.1,
+    "ev": "finale-scrolled"
+  },
+  {
+    "t": 233.1,
+    "ev": "DONE"
+  }
+]

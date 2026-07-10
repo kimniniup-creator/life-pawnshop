@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+  @font-face { font-family: 'Kai V'; src: url('assets/fonts/simkai.ttf'); }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:#0b0a0f; }
+  :root { --gold:#e8b45a; --ink:#f2f1ee; }
+
+  .stage { position:absolute; inset:0;
+    background:
+      radial-gradient(900px 700px at 50% 30%, rgba(58,42,18,.9), transparent 70%),
+      radial-gradient(1200px 900px at 50% 105%, rgba(90,60,20,.35), transparent 75%),
+      #0b0a0f; }
+
+  /* 匾额 */
+  .plaque { position:absolute; top:150px; left:50%; transform:translateX(-50%); z-index:20; text-align:center; }
+  .plaque .ropes { display:flex; justify-content:space-between; width:520px; margin:0 auto; }
+  .plaque .ropes i { display:block; width:6px; height:110px; background:linear-gradient(#2c2210,#6b5a33); }
+  .plaque .board { width:760px; padding:34px 0 30px; margin-top:-2px;
+    background:linear-gradient(180deg,#3a2a16,#241a0e);
+    border:6px solid #14100a; border-radius:10px; position:relative;
+    box-shadow:0 12px 60px rgba(0,0,0,.75), inset 0 0 0 3px rgba(232,180,90,.55), inset 0 0 46px rgba(0,0,0,.6); }
+  .plaque .board::before, .plaque .board::after { content:""; position:absolute; top:14px; width:14px; height:14px;
+    border-radius:50%; background:radial-gradient(circle at 35% 35%, #f4d489, #8a6224); }
+  .plaque .board::before { left:16px; } .plaque .board::after { right:16px; }
+  .plaque .board span { font-family:'Kai V',serif; font-size:112px; letter-spacing:38px; color:var(--gold);
+    display:inline-block; margin-left:38px; text-shadow:0 0 30px rgba(232,180,90,.4), 0 3px 0 rgba(0,0,0,.8); }
+
+  /* 灯笼(沿用主片样式,右上角小一点) */
+  .lantern { position:absolute; left:836px; top:120px; transform:scale(.52); transform-origin:top center; z-index:12; }
+  .lantern .rope { width:5px; height:150px; background:linear-gradient(#39301f,#6b5a33); margin:0 auto; }
+  .lantern .lbody { position:relative; width:350px; height:430px; border-radius:175px/205px;
+    background:radial-gradient(circle at 50% 47%, rgba(255,216,145,.96), rgba(212,148,60,.6) 52%, rgba(94,60,24,.45) 78%, rgba(42,30,15,.55));
+    box-shadow:0 0 150px 36px rgba(232,180,90,.3), inset 0 0 66px rgba(118,70,22,.6); border:3px solid rgba(72,52,24,.9); }
+  .lantern .glow { position:absolute; left:50%; top:47%; width:64px; height:64px; transform:translate(-50%,-50%);
+    border-radius:50%; background:radial-gradient(circle,#fff8e2 18%,#ffd97e 48%,rgba(255,190,90,0) 75%);
+    box-shadow:0 0 66px 26px rgba(255,222,152,.9); }
+  .lantern .tassel { width:9px; height:84px; margin:16px auto 0; border-radius:4px; background:linear-gradient(#8a2f24,#b8452f); }
+
+  /* 柜台 */
+  .counter { position:absolute; left:0; right:0; top:1360px; height:560px; z-index:14;
+    background:linear-gradient(180deg,#4a3218 0,#3a2712 26px,#2c1e0e 27px,#241809 100%);
+    box-shadow:0 -18px 60px rgba(0,0,0,.6); }
+  .counter::before { content:""; position:absolute; left:0; right:0; top:0; height:26px;
+    background:linear-gradient(180deg,#6b4a24,#4a3218); border-top:4px solid #7d5c2e; }
+  .counter .grain { position:absolute; inset:30px 0 0;
+    background:repeating-linear-gradient(90deg, transparent 0 118px, rgba(0,0,0,.25) 118px 124px); }
+  /* 算盘+当票点缀 */
+  .counter .abacus { position:absolute; left:120px; top:-58px; width:250px; height:58px; border-radius:8px 8px 0 0;
+    background:#1c1309; border:5px solid #57401e; border-bottom:none; }
+  .counter .abacus i { position:absolute; top:12px; width:16px; height:16px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #d6a04e, #7a5722); }
+  .counter .ticket { position:absolute; right:130px; top:-40px; width:190px; height:40px; transform:rotate(-4deg);
+    background:#d9c9a3; border:3px solid #8f7f56; }
+  .counter .ticket::before { content:"当"; font-family:'Kai V',serif; position:absolute; left:12px; top:-2px; color:#8a2f24; font-size:30px; }
+
+  /* 像素掌柜 */
+  #boss { position:absolute; left:50%; top:1032px; transform:translateX(-52%); z-index:15; }
+  .px { width:1px; height:1px; }
+
+  /* 金光氛围 */
+  .aura { position:absolute; left:50%; top:1150px; width:900px; height:700px; transform:translateX(-50%); z-index:10;
+    background:radial-gradient(closest-side, rgba(232,180,90,.22), transparent 72%); }
+</style>
+</head>
+<body>
+  <div class="stage"></div>
+  <div class="aura"></div>
+  <div class="plaque">
+    <div class="ropes"><i></i><i></i></div>
+    <div class="board"><span>人生当铺</span></div>
+  </div>
+  <div class="lantern"><div class="rope"></div><div class="lbody"><div class="glow"></div></div><div class="tassel"></div></div>
+  <div id="boss" style="left:28%"><div class="px" id="px"></div></div><div id="boss2" style="position:absolute;left:64%;top:1032px;z-index:15"><div class="px" id="px2"></div></div>
+  <div class="counter">
+    <div class="grain"></div>
+    <div class="abacus"><i style="left:18px"></i><i style="left:58px"></i><i style="left:98px;top:30px"></i><i style="left:138px"></i><i style="left:178px;top:30px"></i><i style="left:210px"></i></div>
+    <div class="ticket"></div>
+  </div>
+
+<script>
+/* 像素女掌柜：斜倚柜台,左手托腮,右手敲桌 · 图层顺序=数组前者在上 */
+const PAL = { D:'#241a14', H:'#3a2b28', h:'#5c443c', S:'#f5d7b8', s:'#e0b48e',
+              B:'#f09e88', E:'#2b2320', R:'#a43e30', r:'#7c2d22', G:'#e8b45a', W:'#fff6e6' };
+const BODY = [
+'........DDDD............',
+'......DDHHHHDD..........',
+'..DD.DHHHHHHHHD.........',
+'.DHHDHHHHHHHHHHD........',
+'.DHGHHHhHHHHhHHD........',
+'.DHHDHHHHHHHHHHHD.......',
+'..DDHHHHHHHHHHHHD.......',
+'...DHSSSSSSSSSSHD.......',
+'...DHSSSSSSSSSSHD.......',
+'...DSSSSSSSSSSSSD.......',
+'...DSBSSSSSSSSBSD.......',
+'...DSSSSSSSSSSSSD.......',
+'....DSSSSSSSSSSD........',
+'.....DSSSSSSSSD.........',
+'....DDRGGGGGGRDD........',
+'...DRRRGRRRRGRRRD.......',
+'..DRRRRGRRRRGRRRRD......',
+'..DRRRRGRRRRGRRRRRD.....',
+'.DRRRRRGRRRRGRRRRRD.....',
+'.DRRRRRRRRRRRRRRRRD.....',
+'DRRRRRRRRRRRRRRRRRRD....',
+'DrrrrrrrrrrrrrrrrrrD....',
+];
+/* 托腮:手贴脸颊+竖前臂落到柜台 */
+const ARM = [
+[8,15,'S'],[8,16,'S'],[9,15,'S'],[9,16,'S'],
+[10,16,'s'],[10,17,'S'],[11,16,'s'],[11,17,'S'],[12,17,'S'],
+[13,17,'R'],[14,17,'R'],[15,17,'R'],[15,18,'R'],[16,17,'R'],[16,18,'R'],
+[17,17,'R'],[17,18,'r'],[18,17,'r'],[18,18,'r'],
+/* 右侧衣袖伸向敲桌手 */
+[16,19,'R'],[17,19,'R'],[17,20,'R'],[18,20,'r'],
+];
+const EYES_OPEN = [[7,6,'W'],[7,7,'E'],[8,6,'E'],[8,7,'E'],[7,11,'W'],[7,12,'E'],[8,11,'E'],[8,12,'E']];
+const EYES_SMUG = [[7,5,'E'],[8,6,'E'],[8,7,'E'],[7,8,'E'],[7,10,'E'],[8,11,'E'],[8,12,'E'],[7,13,'E']];
+const MOUTH_IDLE = [[10,9,'s']];
+const MOUTH_SMUG = [[10,8,'E'],[11,9,'E'],[10,10,'E']];
+const HAND_UP   = [[17,21,'S'],[17,22,'S'],[18,21,'s'],[18,22,'s']];
+const HAND_DOWN = [[18,21,'S'],[18,22,'S'],[19,21,'s'],[19,22,'s']];
+const PXSIZE = 17;
+function drawTo(id, frame, mood) {
+  const shadows = [];
+  const put = (r,c,col) => shadows.push(`${c*PXSIZE}px ${r*PXSIZE}px 0 ${Math.ceil(PXSIZE/2)}px ${PAL[col]}`);
+  (mood==='smug'?EYES_SMUG:EYES_OPEN).forEach(([r,c,col]) => put(r,c,col));
+  (mood==='smug'?MOUTH_SMUG:MOUTH_IDLE).forEach(([r,c,col]) => put(r,c,col));
+  (frame===0?HAND_UP:HAND_DOWN).forEach(([r,c,col]) => put(r,c,col));
+  ARM.forEach(([r,c,col]) => put(r,c,col));
+  BODY.forEach((row,r) => [...row].forEach((ch,c) => { if (ch!=='.') put(r,c,ch); }));
+  document.getElementById(id).style.boxShadow = shadows.join(',');
+}
+drawTo('px',1,'open'); drawTo('px2',0,'smug');
+const draw=(f,m)=>drawTo('px',f,m);
+window.__bossDraw = draw;
+</script>
+</body>
+</html>

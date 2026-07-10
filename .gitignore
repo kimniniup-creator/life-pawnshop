@@ -1,0 +1,24 @@
+node_modules/
+**/node_modules/
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.bak
+*.exe
+.DS_Store
+
+# Generated video workspaces and superseded exports.
+promo-video/renders/
+promo-video/backups/
+promo-video/work/
+promo-video/snapshots/
+promo-video/deliverables/*-v2-46s.mp4
+promo-video/deliverables/*-before-flicker-fix.mp4
+promo-video/*-12s.mp4
+promo-video/*-46s.mp4
+promo-video/*-82s.mp4
+promo-video/*-88s.mp4
+promo-video/opening/renders/*.mp4
+!promo-video/opening/renders/opening_2026-07-05_17-49-13.mp4

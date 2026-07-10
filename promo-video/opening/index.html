@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-CN" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: #ffffff; }
+      @font-face { font-family: 'Fusion Pixel'; src: url('assets/fonts/fusion-pixel.woff2') format('woff2'); }
+      body { font-family: 'Fusion Pixel', monospace; }
+      .scene { position: absolute; inset: 0; background: #fff; }
+      .ink { stroke: #1c1a17; }
+
+      .bub {
+        position: absolute; z-index: 70; background: #fff;
+        border: 6px solid #1c1a17; border-radius: 30px;
+        padding: 24px 38px; color: #1c1a17; letter-spacing: 3px;
+        box-shadow: 5px 6px 0 rgba(28,26,23,0.18);
+      }
+      #tvscreen { position: absolute; left: 186px; top: 330px; width: 708px; height: 330px;
+        border-radius: 18px; background: #111; }
+      .mark { position: absolute; z-index: 65; font-size: 110px; color: #1c1a17; opacity: 0; font-weight: bold; }
+
+      /* ===== 全片新增 ===== */
+      .kcard { position: absolute; left: 50%; transform: translateX(-50%); z-index: 70;
+        background: #f7f1e2; border: 6px solid #1c1a17; border-radius: 18px;
+        box-shadow: 6px 7px 0 rgba(28,26,23,0.18); padding: 26px 44px;
+        font-size: 58px; color: #1c1a17; letter-spacing: 3px; white-space: nowrap; text-align: center; opacity: 0; }
+      .kcard small { display: block; font-size: 34px; color: #a4977c; margin-top: 10px; letter-spacing: 6px; }
+      .gcap { position: absolute; left: 50%; transform: translateX(-50%); bottom: 150px; z-index: 70;
+        background: rgba(19,18,24,0.92); border: 4px solid #e8b45a; border-radius: 14px;
+        padding: 18px 34px; font-size: 40px; color: #f2f1ee; letter-spacing: 2px; white-space: nowrap; opacity: 0; }
+      .gcap em { font-style: normal; color: #e8b45a; }
+      #s3bg { position: absolute; inset: 0; background: #131218; }
+      #gp { position: absolute; left: 97px; top: 0; width: 886px; height: 1920px; object-fit: cover; }
+      #progress-wrap { position: absolute; left: 190px; top: 1000px; width: 700px; height: 54px;
+        border: 6px solid #1c1a17; border-radius: 27px; opacity: 0; }
+      #progress-bar { position: absolute; left: 4px; top: 4px; height: 38px; width: 0;
+        background: #e8b45a; border-radius: 19px; }
+      #lantern-card { position: absolute; left: 50%; top: 780px; transform: translateX(-50%); z-index: 60;
+        width: 420px; padding: 40px 30px; background: #131218; border: 6px solid #e8b45a; border-radius: 22px;
+        text-align: center; opacity: 0; }
+      #lantern-card .lc1 { width: 90px; height: 90px; border-radius: 50%; background: #e8b45a; color: #181410;
+        display: inline-flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 800; }
+      #lantern-card .lc2 { margin-top: 18px; font-size: 44px; color: #f2f1ee; letter-spacing: 6px; }
+      #s5 { position: absolute; inset: 0; background: #faf6ee; }
+      #s5 .w1 { position: absolute; top: 760px; width: 100%; text-align: center; font-size: 110px;
+        color: #3e6b35; letter-spacing: 16px; }
+      #s5 .w2 { position: absolute; top: 940px; width: 100%; text-align: center; font-size: 56px;
+        color: #4a4032; letter-spacing: 6px; }
+      #s5 .w3 { position: absolute; top: 1060px; width: 100%; text-align: center; font-size: 36px;
+        color: #b9ab90; letter-spacing: 6px; }
+
+      .wipe { position: absolute; top: 0; width: 1400px; height: 1920px; z-index: 95;
+        background: #f7f1e2; border-left: 10px solid #1c1a17; border-right: 10px solid #1c1a17;
+        left: -1500px; }
+      .wipe.dark { background: #131218; border-color: #e8b45a; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="88.3" data-width="1080" data-height="1920">
+
+      <!-- ============ S1 客厅:企鹅看电视 0-3.6 ============ -->
+      <div id="sc1" class="scene clip" data-start="9.5" data-duration="3.6" data-track-index="1">
+        <div id="tvscreen"></div>
+        <svg width="780" height="620" viewBox="0 0 780 620" style="position:absolute;left:150px;top:210px">
+          <g class="ink" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M300 88 L385 12 M470 86 L420 30" />
+            <circle cx="385" cy="12" r="8" fill="#1c1a17"/>
+            <circle cx="420" cy="30" r="8" fill="#1c1a17"/>
+            <rect x="18" y="98" width="744" height="404" rx="30" stroke-width="9"/>
+            <rect x="30" y="112" width="720" height="346" rx="20" stroke-width="6"/>
+            <line x1="120" y1="502" x2="96" y2="560"/>
+            <line x1="660" y1="502" x2="684" y2="560"/>
+            <line x1="60" y1="560" x2="720" y2="560" stroke-width="6"/>
+          </g>
+        </svg>
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:0;top:0">
+          <path d="M60 1560 Q540 1544 1020 1560" class="ink" stroke-width="6" fill="none"/>
+        </svg>
+        <svg width="460" height="520" viewBox="0 0 460 520" style="position:absolute;left:310px;top:1060px">
+          <g id="pgP1">
+            <path d="M230 60 Q330 62 340 180 Q352 330 330 420 Q300 470 230 472 Q160 470 130 420 Q108 330 120 180 Q130 62 230 60 Z"
+                  fill="#6f6f6f" class="ink" stroke-width="7"/>
+            <path d="M172 468 Q160 496 138 500 M288 468 Q300 496 322 500" class="ink" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <path d="M148 200 Q230 232 312 200" stroke="#fff" stroke-width="6" fill="none" opacity="0.5"/>
+          </g>
+          <g id="pgP2" opacity="0">
+            <path d="M230 100 Q330 102 340 200 Q352 340 330 424 Q300 470 230 472 Q160 470 130 424 Q108 340 120 200 Q130 102 230 100 Z"
+                  fill="#6f6f6f" class="ink" stroke-width="7"/>
+            <path d="M172 468 Q160 496 138 500 M288 468 Q300 496 322 500" class="ink" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <circle cx="330" cy="120" r="86" fill="#fff" class="ink" stroke-width="7"/>
+            <circle cx="356" cy="102" r="12" fill="#1c1a17"/>
+            <path d="M404 122 L448 134 L404 150 Z" fill="#e8a33b" class="ink" stroke-width="6"/>
+          </g>
+        </svg>
+        <div class="mark" id="mk-ex" style="left:770px;top:1010px">!</div>
+      </div>
+
+      <!-- ============ S2 特写:星星眼 3.6-4.4 ============ -->
+      <div id="sc2" class="scene clip" data-start="13.1" data-duration="0.8" data-track-index="1">
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920">
+          <g class="ink" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="540" cy="900" r="430" fill="#fff"/>
+            <path d="M118 800 Q180 500 540 470 Q900 500 962 800 Q760 700 540 690 Q320 700 118 800 Z" fill="#6f6f6f"/>
+            <path d="M300 620 Q250 560 240 500 M780 620 Q830 560 840 500" stroke-width="8"/>
+            <path d="M370 830 L392 890 L454 894 L406 934 L424 996 L370 958 L316 996 L334 934 L286 894 L348 890 Z" fill="#1c1a17"/>
+            <path d="M710 830 L732 890 L794 894 L746 934 L764 996 L710 958 L656 996 L674 934 L626 894 L688 890 Z" fill="#1c1a17"/>
+            <path d="M420 1120 L540 1080 L660 1120 Q640 1230 540 1236 Q440 1230 420 1120 Z" fill="#e8a33b" stroke-width="9"/>
+            <path d="M120 700 L200 740 M960 700 L880 740 M150 1100 L230 1080 M930 1100 L850 1080" stroke-width="9"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- ============ S3 狂奔 4.4-6.7 ============ -->
+      <div id="sc3" class="scene clip" data-start="13.9" data-duration="2.3" data-track-index="1">
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute">
+          <path d="M40 1400 Q540 1386 1040 1400" class="ink" stroke-width="6" fill="none"/>
+          <g id="speed" class="ink" stroke-width="8" stroke-linecap="round">
+            <line x1="80" y1="1100" x2="300" y2="1100"/>
+            <line x1="40" y1="1200" x2="260" y2="1200"/>
+            <line x1="110" y1="1300" x2="330" y2="1300"/>
+          </g>
+        </svg>
+        <div id="runner" style="position:absolute;left:-360px;top:980px">
+          <svg width="420" height="460" viewBox="0 0 420 460">
+            <g id="pgRunA">
+              <path d="M120 160 Q150 76 250 84 Q340 96 350 190 Q358 290 320 350 Q270 400 190 388 Q110 372 100 280 Q96 200 120 160 Z"
+                    fill="#fff" class="ink" stroke-width="8"/>
+              <path d="M150 130 Q220 90 320 120 Q350 200 340 300 Q300 250 150 130 Z" fill="#6f6f6f"/>
+              <circle cx="296" cy="150" r="13" fill="#1c1a17"/>
+              <path d="M352 168 L410 184 L350 202 Z" fill="#e8a33b" class="ink" stroke-width="6"/>
+              <path d="M120 250 Q60 230 40 190" class="ink" stroke-width="10" fill="none" stroke-linecap="round"/>
+              <path d="M230 390 Q250 430 300 442 M170 386 Q150 420 120 416" class="ink" stroke-width="9" fill="none" stroke-linecap="round"/>
+            </g>
+            <g id="pgRunB" opacity="0">
+              <path d="M120 172 Q150 88 250 96 Q340 108 350 202 Q358 302 320 362 Q270 412 190 400 Q110 384 100 292 Q96 212 120 172 Z"
+                    fill="#fff" class="ink" stroke-width="8"/>
+              <path d="M150 142 Q220 102 320 132 Q350 212 340 312 Q300 262 150 142 Z" fill="#6f6f6f"/>
+              <circle cx="296" cy="162" r="13" fill="#1c1a17"/>
+              <path d="M352 180 L410 196 L350 214 Z" fill="#e8a33b" class="ink" stroke-width="6"/>
+              <path d="M120 240 Q70 280 60 320" class="ink" stroke-width="10" fill="none" stroke-linecap="round"/>
+              <path d="M230 400 Q210 440 160 452 M290 396 Q320 428 350 424" class="ink" stroke-width="9" fill="none" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ============ S4 桌边 6.7-11.8 ============ -->
+      <div id="sc4w" class="scene clip" data-start="16.2" data-duration="5.1" data-track-index="1">
+      <div id="sc4" style="position:absolute;inset:0">
+        <svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute">
+          <g class="ink" stroke-width="7" fill="none" stroke-linejoin="round">
+            <path d="M170 1210 Q540 1180 910 1210 L880 1264 Q540 1240 200 1264 Z" fill="#fff" stroke-width="8"/>
+            <line x1="260" y1="1264" x2="240" y2="1520"/>
+            <line x1="820" y1="1264" x2="840" y2="1520"/>
+            <g id="cards">
+              <rect x="430" y="1200" width="76" height="46" rx="6" fill="#fff" transform="rotate(-6 468 1223)"/>
+              <rect x="520" y="1196" width="76" height="46" rx="6" fill="#fff" transform="rotate(4 558 1219)"/>
+              <rect x="610" y="1204" width="76" height="46" rx="6" fill="#fff" transform="rotate(-3 648 1227)"/>
+            </g>
+          </g>
+        </svg>
+        <svg width="420" height="519" viewBox="0 0 340 420" style="position:absolute;left:640px;top:760px">
+          <g class="ink" stroke-width="7" fill="#fff" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M96 350 Q90 260 170 250 Q252 260 246 350 Z"/>
+            <path d="M78 150 Q78 92 128 88 L140 104 Q170 90 200 104 L212 88 Q262 92 262 150 Q262 200 170 204 Q78 200 78 150 Z"/>
+            <path d="M120 118 L131 136 M170 112 L170 134 M220 118 L209 136" stroke-width="6" fill="none"/>
+            <g id="catCalm">
+              <path d="M116 158 Q131 150 146 158 M194 158 Q209 150 224 158" stroke-width="7" fill="none"/>
+            </g>
+            <g id="catShock" opacity="0">
+              <circle cx="131" cy="158" r="13" fill="#fff" stroke-width="6"/>
+              <circle cx="209" cy="158" r="13" fill="#fff" stroke-width="6"/>
+              <circle cx="133" cy="160" r="6" fill="#1c1a17" stroke="none"/>
+              <circle cx="207" cy="160" r="6" fill="#1c1a17" stroke="none"/>
+            </g>
+            <path d="M164 176 L176 176 L170 184 Z" fill="#1c1a17" stroke-width="4"/>
+            <path d="M246 330 Q300 320 306 270" stroke-width="14" fill="none"/>
+          </g>
+        </svg>
+        <svg width="300" height="433" viewBox="0 0 360 520" style="position:absolute;left:410px;top:680px">
+          <g class="ink" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" fill="none">
+            <path d="M110 60 L250 60 L262 220 L98 220 Z" fill="#d9c193"/>
+            <path d="M110 60 L250 60 L246 88 L114 88 Z" fill="#c4ab7c" stroke-width="6"/>
+            <path d="M236 58 Q268 20 300 34 Q296 66 268 74" fill="#1c1a17"/>
+            <circle cx="150" cy="140" r="10" fill="#1c1a17" stroke="none"/>
+            <circle cx="212" cy="140" r="10" fill="#1c1a17" stroke="none"/>
+            <path d="M150 176 Q181 196 212 176" stroke-width="7"/>
+            <path d="M120 220 Q180 206 240 220 L268 340 Q262 360 240 358 L238 470 Q180 486 122 470 L120 358 Q98 360 92 340 Z" fill="#f2c94c"/>
+            <path d="M132 226 Q180 250 228 226" stroke-width="6"/>
+            <path d="M168 240 L164 292 M192 240 L196 292" stroke-width="5"/>
+          </g>
+        </svg>
+        <div class="mark" id="mk-q" style="left:545px;top:600px;font-size:90px">?</div>
+        <svg width="200" height="220" viewBox="0 0 200 220" style="position:absolute;left:280px;top:880px">
+          <g class="ink" stroke-width="6" fill="#fff" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M100 16 Q109 44 132 48 Q149 40 158 54 Q152 72 168 84 Q186 88 182 106 Q166 114 168 130 Q176 148 162 156 Q146 150 134 162 Q130 182 112 178 Q100 164 84 168 Q66 174 60 158 Q68 144 58 132 Q40 126 44 108 Q60 100 58 84 Q52 68 66 60 Q82 66 92 56 Q94 34 100 16 Z"/>
+            <g id="starOpen">
+              <path d="M78 96 Q84 90 90 96 M110 96 Q116 90 122 96" fill="none" stroke-width="5"/>
+            </g>
+            <g id="starBlink" opacity="0">
+              <path d="M78 98 L90 98 M110 98 L122 98" fill="none" stroke-width="5"/>
+            </g>
+            <path d="M92 116 Q100 122 108 116" fill="none" stroke-width="5"/>
+          </g>
+        </svg>
+        <svg width="380" height="463" viewBox="0 0 460 560" style="position:absolute;left:10px;top:980px">
+          <g id="pgP6" opacity="0">
+            <path d="M230 130 Q330 132 342 240 Q354 380 330 470 Q296 522 230 524 Q164 522 130 470 Q106 380 118 240 Q130 132 230 130 Z"
+                  fill="#fff" class="ink" stroke-width="8"/>
+            <path d="M150 180 Q230 140 316 178 Q332 260 326 300 Q270 220 150 180 Z" fill="#6f6f6f"/>
+            <circle cx="196" cy="212" r="13" fill="#1c1a17"/>
+            <circle cx="286" cy="212" r="13" fill="#1c1a17"/>
+            <path d="M218 258 L264 258 L241 292 Z" fill="#e8a33b" class="ink" stroke-width="6"/>
+            <path d="M130 300 Q70 220 90 150 M330 300 Q390 220 370 150" class="ink" stroke-width="11" fill="none" stroke-linecap="round"/>
+          </g>
+          <g id="pgP7" opacity="0">
+            <path d="M230 150 Q330 152 342 260 Q354 396 330 480 Q296 528 230 530 Q164 528 130 480 Q106 396 118 260 Q130 152 230 150 Z"
+                  fill="#fff" class="ink" stroke-width="8"/>
+            <path d="M150 200 Q230 160 316 198 Q332 280 326 320 Q270 240 150 200 Z" fill="#6f6f6f"/>
+            <circle cx="196" cy="232" r="14" fill="#1c1a17"/>
+            <circle cx="286" cy="232" r="14" fill="#1c1a17"/>
+            <path d="M206 282 L276 282 Q266 342 241 346 Q216 342 206 282 Z" fill="#e8a33b" class="ink" stroke-width="7"/>
+            <path d="M130 330 Q80 380 110 420 M330 330 Q380 380 350 420" class="ink" stroke-width="11" fill="none" stroke-linecap="round"/>
+            <path d="M60 120 L90 160 M410 120 L380 160 M235 70 L235 110" class="ink" stroke-width="8" fill="none" stroke-linecap="round"/>
+          </g>
+        </svg>
+        <div class="bub" id="b1" style="left:120px;top:330px;font-size:76px;transform:rotate(-2deg);opacity:0">我要玩这个!!!</div>
+        <div class="bub" id="b2" style="left:200px;top:530px;font-size:46px;transform:rotate(1deg);opacity:0">现在。马上。</div>
+      </div>
+      </div>
+
+      <!-- ============ 视频与音轨 ============ -->
+      <video id="tv" class="clip" src="assets/clips/tv3s.mp4" muted
+             data-start="9.8" data-duration="3.0" data-track-index="8"
+             style="position:absolute;left:186px;top:330px;width:708px;height:330px;object-fit:cover;border-radius:18px;"></video>
+
+      <audio id="a1" class="clip" src="assets/sfx/n_tv_murmur.mp3" data-start="9.8" data-duration="3.3" data-volume="0.55" data-track-index="90"></audio>
+      <audio id="a2" class="clip" src="assets/sfx/n_pg_wenk_q.mp3" data-start="11.75" data-duration="0.3" data-volume="0.9" data-track-index="91"></audio>
+      <audio id="a3" class="clip" src="assets/sfx/n_pg_wenk2.mp3" data-start="13.2" data-duration="0.5" data-volume="0.95" data-track-index="91"></audio>
+      <audio id="a4" class="clip" src="assets/sfx/n_pg_whoosh.mp3" data-start="13.95" data-duration="0.6" data-volume="0.85" data-track-index="92"></audio>
+      <audio id="a5" class="clip" src="assets/sfx/n_poof.mp3" data-start="15.85" data-duration="0.4" data-volume="0.8" data-track-index="92"></audio>
+      <audio id="a6" class="clip" src="assets/sfx/sfx-1702.mp3" data-start="16.8" data-duration="0.6" data-volume="0.5" data-track-index="92"></audio>
+      <audio id="a7" class="clip" src="assets/sfx/n_pg_wenk_big.mp3" data-start="17.1" data-duration="0.5" data-volume="1" data-track-index="91"></audio>
+      <audio id="a8" class="clip" src="assets/sfx/n_star_ack.mp3" data-start="17.85" data-duration="0.5" data-volume="0.8" data-track-index="93"></audio>
+      <audio id="a9" class="clip" src="assets/sfx/n_cat_hmph.mp3" data-start="18.1" data-duration="0.5" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="a10" class="clip" src="assets/sfx/n_pg_wenk2.mp3" data-start="19.4" data-duration="0.5" data-volume="0.9" data-track-index="91"></audio>
+
+
+      <!-- ===== S1 你的开场 0-9.5 ===== -->
+      <div id="s1" class="scene clip" data-start="0" data-duration="9.5" data-track-index="2">
+        <div style="position:absolute;left:300px;top:1150px;transform:scale(1.35);transform-origin:top left">
+          <svg width="340" height="420" viewBox="0 0 340 420">
+            <g stroke="#3d3428" stroke-width="7" fill="#fff" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M96 350 Q90 260 170 250 Q252 260 246 350 Z"/>
+              <path d="M78 150 Q78 92 128 88 L140 104 Q170 90 200 104 L212 88 Q262 92 262 150 Q262 200 170 204 Q78 200 78 150 Z"/>
+              <path d="M120 118 L131 136 M170 112 L170 134 M220 118 L209 136" stroke-width="6" fill="none"/>
+              <g id="s1-eye-open">
+                <path d="M116 158 Q131 150 146 158 M194 158 Q209 150 224 158" stroke-width="7" fill="none"/>
+              </g>
+              <g id="s1-eye-happy" opacity="0">
+                <path d="M116 162 Q131 172 146 162 M194 162 Q209 172 224 162" stroke-width="7" fill="none"/>
+              </g>
+              <path d="M164 176 L176 176 L170 184 Z" fill="#1c1a17" stroke-width="4"/>
+              <path d="M246 330 Q300 320 306 270" stroke-width="14" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <div class="kcard" id="k1" style="top:380px">最近沉迷 vibe coding</div>
+        <div class="kcard" id="k2" style="top:560px;font-size:50px">趁着 Fable 5 回血<br>我的 AI 精神病回归了</div>
+        <div class="kcard" id="k3" style="top:820px">然后,昨晚发生了这么件事<small>请看 VCR ↓</small></div>
+      </div>
+
+      <!-- ===== S2b 新增剧情 21.3-31.3 ===== -->
+      <div id="s2b1" class="scene clip" data-start="21.3" data-duration="2.9" data-track-index="2">
+        <div style="position:absolute;left:330px;top:760px">
+          <svg width="420" height="606" viewBox="0 0 360 520">
+            <g stroke="#3d3428" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M110 60 L250 60 L262 220 L98 220 Z" fill="#d9c193"/>
+              <path d="M110 60 L250 60 L246 88 L114 88 Z" fill="#c4ab7c" stroke-width="6"/>
+              <path d="M236 58 Q268 20 300 34 Q296 66 268 74" fill="#3d3428"/>
+              <circle cx="150" cy="140" r="10" fill="#3d3428" stroke="none"/>
+              <circle cx="212" cy="140" r="10" fill="#3d3428" stroke="none"/>
+              <path d="M150 176 Q181 196 212 176" fill="none" stroke-width="7"/>
+              <path d="M120 220 Q180 206 240 220 L268 340 Q262 360 240 358 L238 470 Q180 486 122 470 L120 358 Q98 360 92 340 Z" fill="#f2c94c"/>
+              <path d="M132 226 Q180 250 228 226" fill="none" stroke-width="6"/>
+              <path d="M168 240 L164 292 M192 240 L196 292" fill="none" stroke-width="5"/>
+              <path d="M238 330 Q274 296 268 250" fill="none" stroke-width="10"/>
+            </g>
+          </svg>
+        </div>
+        <div class="bub" id="nb1" style="left:110px;top:360px;font-size:52px;opacity:0">这个应该有小程序吧?<br>我们仨可以线上一起玩!</div>
+      </div>
+      <div id="s2b2" class="scene clip" data-start="24.2" data-duration="2.6" data-track-index="2">
+        <div style="position:absolute;left:330px;top:800px">
+          <svg width="420" height="583" viewBox="0 0 360 500">
+            <g stroke="#3d3428" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M180 90 Q280 96 292 220 Q302 360 272 420 Q234 462 180 464 Q126 462 88 420 Q58 360 68 220 Q80 96 180 90 Z" fill="#8f8f8f"/>
+              <path d="M180 220 Q240 226 246 320 Q248 400 180 408 Q112 400 114 320 Q120 226 180 220 Z" fill="#f6f4f0" stroke-width="6"/>
+              <path d="M180 90 Q280 96 288 190 Q240 160 180 158 Q120 160 72 190 Q80 96 180 90 Z" fill="#3f3f3f"/>
+              <ellipse cx="138" cy="160" rx="34" ry="30" fill="#f6f4f0" stroke-width="6"/>
+              <ellipse cx="222" cy="160" rx="34" ry="30" fill="#f6f4f0" stroke-width="6"/>
+              <path d="M128 166 Q142 158 156 166 M204 166 Q218 158 232 166" fill="none" stroke-width="7"/>
+              <path d="M164 182 L196 182 L180 204 Z" fill="#e8a33b" stroke-width="6"/>
+              <rect x="120" y="280" width="120" height="86" rx="12" fill="#fff" stroke-width="7"/>
+              <path d="M150 302 L210 344 M210 302 L150 344" stroke-width="8" stroke="#cc4536" fill="none"/>
+              <path d="M78 280 Q52 300 100 292 M282 280 Q308 300 260 292" fill="none" stroke-width="11"/>
+            </g>
+          </svg>
+        </div>
+        <div class="bub" id="nb2" style="left:280px;top:430px;font-size:56px;opacity:0">……找不到 😭</div>
+      </div>
+            <div id="s2b3r" class="scene clip" data-start="26.8" data-duration="2.6" data-track-index="2">
+        <div style="position:absolute;left:280px;top:800px;transform:scale(1.5);transform-origin:top left">
+          <svg width="340" height="420" viewBox="0 0 340 420">
+            <g stroke="#3d3428" stroke-width="7" fill="#fff" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M96 350 Q90 260 170 250 Q252 260 246 350 Z"/>
+              <path d="M78 150 Q78 92 128 88 L140 104 Q170 90 200 104 L212 88 Q262 92 262 150 Q262 200 170 204 Q78 200 78 150 Z"/>
+              <path d="M120 118 L131 136 M170 112 L170 134 M220 118 L209 136" stroke-width="6" fill="none"/>
+              <circle cx="131" cy="158" r="12" fill="#fff" stroke-width="6"/>
+              <circle cx="209" cy="158" r="12" fill="#fff" stroke-width="6"/>
+              <circle cx="133" cy="160" r="6" fill="#1c1a17" stroke="none"/>
+              <circle cx="207" cy="160" r="6" fill="#1c1a17" stroke="none"/>
+              <path d="M156 180 L184 180 Q180 200 170 202 Q160 200 156 180 Z" fill="#e8927c" stroke-width="5"/>
+              <path d="M246 330 Q300 320 306 270" stroke-width="14" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <div class="bub" id="nb3" style="left:90px;top:380px;font-size:52px;opacity:0">阿芒!给我们仨做一个<br>能一起玩的网址!</div>
+      </div>
+      <div id="s2b4" class="scene clip" data-start="29.4" data-duration="1.9" data-track-index="2">
+        <div style="position:absolute;left:410px;top:430px">
+          <svg width="260" height="300" viewBox="0 0 260 300">
+            <g stroke="#3d3428" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M130 24 Q142 60 172 66 Q194 54 206 72 Q198 96 218 112 Q242 118 236 140 Q216 152 218 172 Q230 196 210 206 Q188 200 174 214 Q168 242 144 238 Q130 218 110 222 Q86 230 78 210 Q90 190 78 174 Q54 166 60 144 Q80 134 78 114 Q68 92 88 82 Q110 90 124 78 Q126 50 130 24 Z" fill="#f7ead2"/>
+              <circle cx="148" cy="140" r="52" fill="#fbd9a8" stroke="none" opacity="0.55"/>
+              <path d="M120 132 Q128 124 136 132 M158 132 Q166 124 174 132" fill="none" stroke-width="6"/>
+              <path d="M138 158 Q148 166 158 158" fill="none" stroke-width="6"/>
+            </g>
+          </svg>
+        </div>
+        <div class="bub" id="nb4" style="left:300px;top:280px;font-size:50px;opacity:0">收到,现在改</div>
+        <div id="progress-wrap"><div id="progress-bar"></div></div>
+        <div id="lantern-card"><span class="lc1">当</span><div class="lc2">人生当铺<br>已就绪 🏮</div></div>
+      </div>
+
+      <!-- ===== S3 录屏 31.3-65.6 ===== -->
+      <div id="s3bg" class="scene clip" data-start="31.3" data-duration="40.7" data-track-index="1"></div>
+      <video id="gp" class="clip" src="assets/clips/gameplay-cut.mp4" muted
+             data-start="31.3" data-duration="40.7" data-track-index="3"></video>
+      <div class="gcap clip" id="g1" data-start="31.8" data-duration="3.8" data-track-index="10">开个房间,拉朋友进来</div>
+      <div class="gcap clip" id="g2" data-start="38.2" data-duration="4.0" data-track-index="10">选 7 样你最舍不得的东西</div>
+      <div class="gcap clip" id="g3" data-start="43.0" data-duration="3.2" data-track-index="10">我写了:<em>我的猫</em></div>
+      <div class="gcap clip" id="g4" data-start="47.0" data-duration="4.0" data-track-index="10">命运出牌:<em>硬扛,还是典当?</em></div>
+      <div class="gcap clip" id="g5" data-start="53.8" data-duration="3.6" data-track-index="10">你纠结时,朋友在赌你会怂</div>
+      <div class="gcap clip" id="g6" data-start="58.2" data-duration="3.4" data-track-index="10">AI 掌柜,句句现挂</div><div style="display:none"></div>
+      <div class="gcap clip" id="g7" data-start="0" data-duration="0.1" data-track-index="20" style="display:none">x</div>
+      <div class="gcap clip" id="g8" data-start="62.6" data-duration="8.4" data-track-index="10">终局:AI 掌柜给每个人<em>写一篇人生小传</em></div>
+
+      <!-- ===== S4 收尾 65.6-78.2 ===== -->
+      <div id="s4" class="scene clip" data-start="72" data-duration="12.6" data-track-index="2">
+        <div style="position:absolute;left:320px;top:1180px;transform:scale(1.3);transform-origin:top left">
+          <svg width="340" height="420" viewBox="0 0 340 420">
+            <g stroke="#3d3428" stroke-width="7" fill="#fff" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M96 350 Q90 260 170 250 Q252 260 246 350 Z"/>
+              <path d="M78 150 Q78 92 128 88 L140 104 Q170 90 200 104 L212 88 Q262 92 262 150 Q262 200 170 204 Q78 200 78 150 Z"/>
+              <path d="M120 118 L131 136 M170 112 L170 134 M220 118 L209 136" stroke-width="6" fill="none"/>
+              <path d="M116 162 Q131 172 146 162 M194 162 Q209 172 224 162" stroke-width="7" fill="none"/>
+              <path d="M164 176 L176 176 L170 184 Z" fill="#1c1a17" stroke-width="4"/>
+              <path d="M246 330 Q300 320 306 270" stroke-width="14" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <div style="position:absolute;left:660px;top:1260px">
+          <svg width="190" height="220" viewBox="0 0 260 300">
+            <g stroke="#3d3428" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+              <path d="M130 24 Q142 60 172 66 Q194 54 206 72 Q198 96 218 112 Q242 118 236 140 Q216 152 218 172 Q230 196 210 206 Q188 200 174 214 Q168 242 144 238 Q130 218 110 222 Q86 230 78 210 Q90 190 78 174 Q54 166 60 144 Q80 134 78 114 Q68 92 88 82 Q110 90 124 78 Q126 50 130 24 Z" fill="#f7ead2"/>
+              <path d="M120 132 Q128 124 136 132 M158 132 Q166 124 174 132" fill="none" stroke-width="6"/>
+              <path d="M138 158 Q148 166 158 158" fill="none" stroke-width="6"/>
+            </g>
+          </svg>
+        </div>
+        <div class="kcard" id="k4" style="top:330px">就是这个,我们仨今晚真在玩</div>
+        <div class="kcard" id="k5" style="top:510px;font-size:48px">链接扔评论区了,想玩自己拿<small>免费 · 不用下载</small></div>
+        <div class="kcard" id="k6" style="top:760px;font-size:46px">玩崩了算我的,好玩算你们的</div>
+        <div class="kcard" id="k7" style="top:1000px;font-size:46px">缺什么模组,评论区喊一声<small>我让 AI 连夜加</small></div>
+      </div>
+
+      <!-- ===== S5 落款 78.2-81.8 ===== -->
+      <div id="s5" class="scene clip" data-start="84.6" data-duration="3.7" data-track-index="2">
+        <div class="w1" id="w1">WIN OR LEARN</div>
+        <div class="w2" id="w2">@twinkle thrice</div>
+        <div class="w3" id="w3">🏮 人生当铺 · 当铺不定时开门营业</div>
+      </div>
+
+
+      <audio id="bgm2" class="clip" src="assets/bgm-1072.mp3" data-start="0" data-duration="88.3" data-media-start="0.5" data-volume="0.36" data-track-index="89"></audio>
+      <audio id="na1" class="clip" src="assets/sfx/n_cat_talk.mp3" data-start="0.6" data-duration="1.0" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na2" class="clip" src="assets/sfx/n_cat_ask.mp3" data-start="3.5" data-duration="0.6" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na3" class="clip" src="assets/sfx/n_cat_happy.mp3" data-start="6.9" data-duration="0.8" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na4" class="clip" src="assets/sfx/n_star_agree.mp3" data-start="21.6" data-duration="0.9" data-volume="0.85" data-track-index="94"></audio>
+      <audio id="na5" class="clip" src="assets/sfx/n_pg_wenk_q.mp3" data-start="24.6" data-duration="0.3" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na6" class="clip" src="assets/sfx/n_cat_talk.mp3" data-start="27.0" data-duration="1.0" data-volume="0.95" data-track-index="94"></audio>
+      <audio id="na7" class="clip" src="assets/sfx/n_star_ack.mp3" data-start="29.6" data-duration="0.5" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na8" class="clip" src="assets/sfx/n_star_wait.mp3" data-start="29.9" data-duration="0.9" data-volume="0.6" data-track-index="95"></audio>
+      <audio id="na9" class="clip" src="assets/sfx/n_star_done.mp3" data-start="30.7" data-duration="0.9" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na10" class="clip" src="assets/sfx/n_star_praised.mp3" data-start="84.8" data-duration="1.4" data-volume="0.9" data-track-index="94"></audio>
+      <audio id="na11" class="clip" src="assets/sfx/n_cat_ok.mp3" data-start="86.1" data-duration="0.6" data-volume="0.9" data-track-index="95"></audio>
+
+      <div class="wipe clip" id="wp1" data-start="9.1" data-duration="1.0" data-track-index="30"></div>
+      <div class="wipe dark clip" id="wp2" data-start="30.9" data-duration="1.0" data-track-index="30"></div>
+      <div class="wipe clip" id="wp3" data-start="71.6" data-duration="1.0" data-track-index="30"></div>
+      <div class="wipe clip" id="wp4" data-start="84.2" data-duration="1.0" data-track-index="30"></div>
+      <div id="end-anchor-el" style="position:absolute;width:1px;height:1px"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      /* 全片纪律:只用 set(瞬换)和 steps(阶梯位移),零平滑 tween */
+
+      // S1: 企鹅回头 + "!"
+      tl.set('#mk-ex', { autoAlpha: 0 }, 9.5)
+        .set('#pgP1', { opacity: 0 }, 11.7).set('#pgP2', { opacity: 1 }, 11.7)
+        .set('#mk-ex', { autoAlpha: 1 }, 11.8)
+        .set('#mk-ex', { autoAlpha: 0 }, 12.05)
+        .set('#mk-ex', { autoAlpha: 1 }, 12.2);
+
+      // S3: 狂奔 —— 阶梯位移 + 两帧跑步循环
+      tl.fromTo('#runner', { x: 0 }, { x: 1500, duration: 2.0, ease: 'steps(16)', immediateRender: false }, 13.95);
+      for (let i = 0; i < 14; i++) {
+        const t = 13.95 + i * 0.14;
+        tl.set('#pgRunA', { opacity: i % 2 === 0 ? 1 : 0 }, t)
+          .set('#pgRunB', { opacity: i % 2 === 0 ? 0 : 1 }, t);
+      }
+      for (let i = 0; i < 10; i++) {
+        tl.set('#speed', { opacity: i % 2 === 0 ? 1 : 0.25 }, 14.0 + i * 0.2);
+      }
+
+      // S4: 举翅(预备)→ 拍桌 → 反应
+      tl.set(['#pgP6', '#pgP7'], { opacity: 0 }, 16.2)
+        .set(['#b1', '#b2'], { autoAlpha: 0 }, 16.2)
+        .set('#mk-q', { autoAlpha: 0 }, 16.2)
+        .set('#pgP6', { opacity: 1 }, 16.55)
+        .set('#pgP6', { opacity: 0 }, 16.85)
+        .set('#pgP7', { opacity: 1 }, 16.85)
+        .set('#cards', { y: -10 }, 16.85)
+        .set('#cards', { y: 0 }, 17)
+        .set('#sc4', { scale: 1.05, transformOrigin: '30% 60%' }, 16.85)
+        .set('#sc4', { scale: 1 }, 17)
+        .set('#b1', { autoAlpha: 1 }, 17.1)
+        .set('#catCalm', { opacity: 0 }, 17.8).set('#catShock', { opacity: 1 }, 17.8)
+        .set('#starOpen', { opacity: 0 }, 17.85).set('#starBlink', { opacity: 1 }, 17.85)
+        .set('#starOpen', { opacity: 1 }, 18.05).set('#starBlink', { opacity: 0 }, 18.05)
+        .set('#mk-q', { autoAlpha: 1 }, 17.95)
+        .set('#b2', { autoAlpha: 1 }, 19.4)
+        .set('#catShock', { opacity: 0 }, 20.1).set('#catCalm', { opacity: 1 }, 20.1);
+
+      
+      // ===== S1 =====
+      const kIn = (id, t) => tl.fromTo(id, { autoAlpha: 0, scale: 0.8, y: 20 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.2, ease: 'back.out(2)', immediateRender: false }, t);
+      kIn('#k1', 0.5); kIn('#k2', 3.4); kIn('#k3', 6.8);
+      tl.set('#s1-eye-open', { opacity: 0 }, 6.9).set('#s1-eye-happy', { opacity: 1 }, 6.9);
+      // ===== S2b =====
+      kIn('#nb1', 21.6); kIn('#nb2', 24.6); kIn('#nb3', 27.0); kIn('#nb4', 29.6);
+      tl.set('#progress-wrap', { autoAlpha: 1 }, 29.9)
+        .fromTo('#progress-bar', { width: 0 }, { width: 688, duration: 0.8, ease: 'steps(8)', immediateRender: false }, 29.9)
+        .set('#progress-wrap', { autoAlpha: 0 }, 30.8)
+        .fromTo('#lantern-card', { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.2, ease: 'back.out(2.4)', immediateRender: false }, 30.8);
+      // ===== S3 字幕 =====
+      for (const g of ['#g1','#g2','#g3','#g4','#g5','#g6','#g7','#g8']) {
+        const el = document.querySelector(g);
+        tl.fromTo(g, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: 0.2, ease: 'power2.out', immediateRender: false }, parseFloat(el.dataset.start));
+      }
+      // ===== S4 =====
+      kIn('#k4', 72.3); kIn('#k5', 75.3); kIn('#k6', 78.1); kIn('#k7', 80.9);
+      // ===== S5 =====
+      tl.fromTo('#w1', { autoAlpha: 0, scale: 1.6 }, { autoAlpha: 1, scale: 1, duration: 0.22, ease: 'power4.in', immediateRender: false }, 84.8)
+        .fromTo('#w2', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, immediateRender: false }, 85.3)
+        .fromTo('#w3', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, immediateRender: false }, 85.8);
+
+      
+      // 转场横扫
+      for (const [id, t] of [['#wp1', 9.1], ['#wp2', 30.9], ['#wp3', 71.6], ['#wp4', 84.2]]) {
+        tl.fromTo(id, { x: 0 }, { x: 2980, duration: 0.9, ease: 'power2.inOut', immediateRender: false }, t);
+      }
+      tl.set('#end-anchor-el', { x: 0 }, 88.3);
+      window.__timelines['main'] = tl;
+    </script>
+  </body>
+</html>

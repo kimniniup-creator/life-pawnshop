@@ -1,0 +1,17 @@
+{
+  "name": "life-pawnshop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "人生当铺 · 多人在线卡牌游戏",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "pngjs": "^7.0.0",
+    "puppeteer-core": "^25.3.0",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.8.3"
+  }
+}

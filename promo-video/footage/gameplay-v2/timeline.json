@@ -1,0 +1,146 @@
+[
+  {
+    "t": 2.1,
+    "ev": "landing"
+  },
+  {
+    "t": 3.5,
+    "ev": "room-created:8175"
+  },
+  {
+    "t": 5.6,
+    "ev": "friends-joined"
+  },
+  {
+    "t": 8.6,
+    "ev": "deck-life"
+  },
+  {
+    "t": 9,
+    "ev": "game-start"
+  },
+  {
+    "t": 9.6,
+    "ev": "pick-start"
+  },
+  {
+    "t": 20.9,
+    "ev": "pick-dream"
+  },
+  {
+    "t": 22.7,
+    "ev": "pick-done"
+  },
+  {
+    "t": 23.3,
+    "ev": "auction"
+  },
+  {
+    "t": 26.7,
+    "ev": "auction"
+  },
+  {
+    "t": 31,
+    "ev": "auction"
+  },
+  {
+    "t": 34.6,
+    "ev": "my-op"
+  },
+  {
+    "t": 37.5,
+    "ev": "guess"
+  },
+  {
+    "t": 39.6,
+    "ev": "guess"
+  },
+  {
+    "t": 41.6,
+    "ev": "redeem-pass"
+  },
+  {
+    "t": 43.7,
+    "ev": "guess"
+  },
+  {
+    "t": 45.7,
+    "ev": "guess"
+  },
+  {
+    "t": 48.8,
+    "ev": "my-drama-pawn"
+  },
+  {
+    "t": 53.4,
+    "ev": "verdict:「特长路上意外受伤，天赋一夜作废」这道坎，收你「从一而终的梦想」和「家人」——"
+  },
+  {
+    "t": 55.5,
+    "ev": "redeem-pass"
+  },
+  {
+    "t": 57.7,
+    "ev": "my-drama-endure"
+  },
+  {
+    "t": 60.9,
+    "ev": "guess"
+  },
+  {
+    "t": 62.8,
+    "ev": "guess"
+  },
+  {
+    "t": 64.8,
+    "ev": "redeem-pass"
+  },
+  {
+    "t": 67.1,
+    "ev": "guess"
+  },
+  {
+    "t": 70.3,
+    "ev": "guess"
+  },
+  {
+    "t": 73.4,
+    "ev": "my-drama-endure"
+  },
+  {
+    "t": 76.7,
+    "ev": "redeem-pass"
+  },
+  {
+    "t": 79.4,
+    "ev": "guess"
+  },
+  {
+    "t": 82.5,
+    "ev": "my-drama-endure"
+  },
+  {
+    "t": 85.8,
+    "ev": "guess"
+  },
+  {
+    "t": 88.9,
+    "ev": "redeem-pass"
+  },
+  {
+    "t": 91.7,
+    "ev": "finale"
+  },
+  {
+    "t": 181.7,
+    "ev": "bios-timeout"
+  },
+  {
+    "t": 188.2,
+    "ev": "finale-scrolled"
+  },
+  {
+    "t": 190.2,
+    "ev": "DONE"
+  }
+]

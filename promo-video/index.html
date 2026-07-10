@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="zh-CN" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Deng V"; src: url("assets/fonts/deng.ttf"); }
+      @font-face { font-family: "YaHei V"; src: url("assets/fonts/msyh.ttc"); }
+      @font-face { font-family: "YaHei V"; src: url("assets/fonts/msyhbd.ttc"); font-weight: 700; }
+      @font-face { font-family: "Kai V"; src: url("assets/fonts/simkai.ttf"); }
+      @font-face { font-family: "FZYao V"; src: url("assets/fonts/fzytk.ttf"); }
+
+      * { box-sizing: border-box; }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        margin: 0;
+        overflow: hidden;
+        background: #0b0a0f;
+      }
+      body {
+        font-family: "Deng V", "YaHei V", sans-serif;
+        color: #f2f1ee;
+      }
+
+      #life-pawnshop-final {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background:
+          radial-gradient(820px 620px at 50% 24%, rgba(232, 180, 90, 0.11), rgba(11, 10, 15, 0) 72%),
+          radial-gradient(820px 640px at 48% 98%, rgba(103, 36, 32, 0.2), rgba(11, 10, 15, 0) 76%),
+          #0b0a0f;
+      }
+
+      .footage {
+        position: absolute;
+        inset: 0;
+        width: 1080px;
+        height: 1920px;
+        object-fit: cover;
+        background: #0b0a0f;
+        z-index: 1;
+      }
+
+      .screen-shade {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+        pointer-events: none;
+        background:
+          linear-gradient(180deg, rgba(11, 10, 15, 0.54) 0%, rgba(11, 10, 15, 0.1) 16%, rgba(11, 10, 15, 0) 38%),
+          linear-gradient(0deg, rgba(11, 10, 15, 0.72) 0%, rgba(11, 10, 15, 0.34) 19%, rgba(11, 10, 15, 0) 42%);
+      }
+
+      .pixel-grain {
+        position: absolute;
+        inset: 0;
+        z-index: 21;
+        opacity: 0;
+        pointer-events: none;
+        background: none;
+      }
+
+      .opening {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        overflow: hidden;
+        background:
+          radial-gradient(720px 520px at 54% 34%, rgba(232, 180, 90, 0.23), rgba(11, 10, 15, 0) 70%),
+          radial-gradient(900px 680px at 50% 98%, rgba(102, 38, 30, 0.24), rgba(11, 10, 15, 0) 76%),
+          #0b0a0f;
+      }
+      .opening:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.13;
+        background-image:
+          linear-gradient(rgba(232, 180, 90, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(232, 180, 90, 0.06) 1px, transparent 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(180deg, transparent, #000 18%, #000 76%, transparent);
+      }
+
+      .shop-sign {
+        position: absolute;
+        top: 158px;
+        left: 50%;
+        width: 640px;
+        transform: translateX(-50%);
+        z-index: 8;
+      }
+      .shop-sign .ropes {
+        display: flex;
+        justify-content: space-between;
+        width: 410px;
+        height: 78px;
+        margin: 0 auto;
+      }
+      .shop-sign .ropes i {
+        display: block;
+        width: 6px;
+        background: linear-gradient(180deg, #7b5b25, #34210d);
+      }
+      .shop-sign .board {
+        height: 118px;
+        display: grid;
+        place-items: center;
+        border: 4px solid #967143;
+        background:
+          repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 20px, rgba(0, 0, 0, 0) 20px 40px),
+          linear-gradient(180deg, #3a2512, #1b1209);
+        box-shadow:
+          inset 0 0 0 4px rgba(0, 0, 0, 0.54),
+          0 22px 80px rgba(0, 0, 0, 0.66),
+          0 0 54px rgba(232, 180, 90, 0.16);
+      }
+      .shop-sign span {
+        font-family: "Kai V", serif;
+        font-size: 68px;
+        font-weight: 400;
+        color: #e8b45a;
+        text-shadow: 0 0 20px rgba(232, 180, 90, 0.36);
+      }
+
+      .counter {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 455px;
+        z-index: 6;
+        border-top: 5px solid #8d6734;
+        background:
+          repeating-linear-gradient(90deg, rgba(0, 0, 0, 0) 0 128px, rgba(0, 0, 0, 0.2) 128px 136px),
+          linear-gradient(180deg, #705029 0 34px, #3d2815 34px, #1e130a 100%);
+        box-shadow: 0 -30px 92px rgba(0, 0, 0, 0.64);
+      }
+      .counter .ledger {
+        position: absolute;
+        left: 188px;
+        top: -82px;
+        width: 345px;
+        height: 150px;
+        transform: rotate(-2deg);
+        border: 4px solid #8e6239;
+        border-radius: 5px;
+        background:
+          linear-gradient(90deg, #d8c091 0 48%, #c1a16d 48% 51%, #e0c998 51% 100%);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.42);
+      }
+      .counter .ledger:before,
+      .counter .ledger:after {
+        content: "";
+        position: absolute;
+        top: 26px;
+        width: 112px;
+        height: 5px;
+        background: rgba(83, 54, 28, 0.42);
+        box-shadow: 0 28px 0 rgba(83, 54, 28, 0.38), 0 56px 0 rgba(83, 54, 28, 0.3);
+      }
+      .counter .ledger:before { left: 36px; }
+      .counter .ledger:after { right: 36px; }
+      .counter .stamp {
+        position: absolute;
+        left: 620px;
+        top: -42px;
+        width: 72px;
+        height: 106px;
+        border-radius: 18px 18px 8px 8px;
+        background: linear-gradient(180deg, #b2392d, #541812);
+        box-shadow: 0 16px 26px rgba(0, 0, 0, 0.4);
+      }
+      .counter .stamp:before {
+        content: "";
+        position: absolute;
+        left: 15px;
+        top: -28px;
+        width: 42px;
+        height: 38px;
+        border-radius: 20px 20px 8px 8px;
+        background: #c74234;
+      }
+
+      .opening-keeper {
+        position: absolute;
+        left: 50%;
+        bottom: 250px;
+        width: 740px;
+        transform: translateX(-50%);
+        image-rendering: pixelated;
+        filter:
+          drop-shadow(0 22px 36px rgba(0, 0, 0, 0.62))
+          drop-shadow(0 0 34px rgba(232, 180, 90, 0.2));
+        z-index: 7;
+      }
+
+      .warning-scene {
+        position: absolute;
+        inset: 0;
+        z-index: 24;
+        overflow: hidden;
+        background:
+          radial-gradient(620px 500px at 50% 35%, rgba(232, 180, 90, 0.19), rgba(11, 10, 15, 0) 72%),
+          radial-gradient(760px 560px at 50% 86%, rgba(217, 91, 79, 0.13), rgba(11, 10, 15, 0) 74%),
+          #0b0a0f;
+      }
+      .warning-scene:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.13;
+        background-image:
+          linear-gradient(rgba(232, 180, 90, 0.08) 1px, rgba(232, 180, 90, 0) 1px),
+          linear-gradient(90deg, rgba(232, 180, 90, 0.06) 1px, rgba(232, 180, 90, 0) 1px);
+        background-size: 38px 38px;
+        mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0), #000 18%, #000 80%, rgba(0, 0, 0, 0));
+      }
+      .warning-plaque {
+        position: absolute;
+        left: 50%;
+        top: 182px;
+        transform: translateX(-50%);
+        padding: 15px 30px 18px;
+        border: 2px solid rgba(232, 180, 90, 0.48);
+        border-radius: 18px;
+        background: rgba(43, 28, 14, 0.78);
+        color: #e8b45a;
+        font-family: "Kai V", serif;
+        font-size: 44px;
+        line-height: 1;
+        letter-spacing: 0.03em;
+        box-shadow:
+          inset 0 0 0 2px rgba(0, 0, 0, 0.38),
+          0 18px 54px rgba(0, 0, 0, 0.42);
+      }
+      .warning-keeper {
+        position: absolute;
+        left: 248px;
+        top: 430px;
+        width: 585px;
+        image-rendering: pixelated;
+        filter:
+          drop-shadow(0 28px 42px rgba(0, 0, 0, 0.62))
+          drop-shadow(0 0 32px rgba(232, 180, 90, 0.2));
+      }
+      .warning-line {
+        position: absolute;
+        left: 88px;
+        right: 88px;
+        bottom: 286px;
+        min-height: 184px;
+        display: grid;
+        place-items: center;
+        padding: 28px 34px 34px;
+        border: 1.5px solid rgba(232, 180, 90, 0.28);
+        border-radius: 24px;
+        background:
+          radial-gradient(460px 160px at 50% 0%, rgba(232, 180, 90, 0.13), rgba(11, 10, 15, 0)),
+          rgba(13, 10, 14, 0.86);
+        box-shadow:
+          inset 0 0 0 1px rgba(255, 236, 183, 0.05),
+          0 22px 62px rgba(0, 0, 0, 0.48);
+        text-align: center;
+      }
+      .warning-line span {
+        display: block;
+        margin-bottom: 12px;
+        color: #e8c16e;
+        font-family: "Kai V", serif;
+        font-size: 34px;
+        line-height: 1;
+      }
+      .warning-line strong {
+        display: block;
+        color: #f2f1ee;
+        font-family: "FZYao V", "YaHei V", sans-serif;
+        font-size: 43px;
+        line-height: 1.26;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.58);
+      }
+
+      .soft-caption,
+      .topic-caption,
+      .small-note,
+      .ending-card,
+      .result-strip,
+      .keeper-sticker,
+      .death-stamp,
+      .lantern-flash {
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .soft-caption {
+        left: 92px;
+        right: 92px;
+        bottom: 222px;
+        z-index: 31;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 108px;
+        padding: 18px 32px 21px;
+        border: 1.5px solid rgba(232, 180, 90, 0.18);
+        border-radius: 22px;
+        background: rgba(13, 10, 14, 0.82);
+        box-shadow:
+          inset 0 0 0 1px rgba(255, 236, 183, 0.04),
+          0 22px 62px rgba(0, 0, 0, 0.48);
+        color: #f2f1ee;
+        font-family: "FZYao V", "YaHei V", sans-serif;
+        font-size: 39px;
+        line-height: 1.26;
+        font-weight: 400;
+        text-align: center;
+        text-wrap: balance;
+        letter-spacing: 0.01em;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+      }
+      .soft-caption em {
+        font-style: normal;
+        color: #e8c16e;
+        font-family: "FZYao V", "YaHei V", sans-serif;
+        font-weight: 400;
+      }
+      .soft-caption.danger em { color: #ff9b90; }
+
+      .topic-caption {
+        left: 82px;
+        right: 82px;
+        top: 112px;
+        z-index: 30;
+        min-height: 106px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px 32px 22px;
+        border: 1.5px solid rgba(232, 180, 90, 0.28);
+        border-radius: 24px;
+        background: rgba(18, 13, 16, 0.82);
+        box-shadow: 0 18px 52px rgba(0, 0, 0, 0.36);
+        font-family: "FZYao V", "YaHei V", sans-serif;
+        font-size: 44px;
+        line-height: 1.22;
+        font-weight: 400;
+        text-align: center;
+        color: #f3cf86;
+      }
+      .topic-caption.love {
+        color: #ffe2ef;
+        border-color: rgba(217, 91, 150, 0.36);
+        background: rgba(45, 20, 37, 0.82);
+      }
+      .topic-caption.career {
+        color: #ffdda2;
+        border-color: rgba(232, 180, 90, 0.36);
+        background: rgba(44, 30, 16, 0.82);
+      }
+
+      .small-note {
+        left: 96px;
+        bottom: 314px;
+        z-index: 26;
+        padding: 12px 20px 14px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(232, 180, 90, 0.26);
+        background: rgba(16, 12, 16, 0.72);
+        color: #e8c16e;
+        font-size: 28px;
+        line-height: 1;
+        font-weight: 400;
+        box-shadow: 0 10px 34px rgba(0, 0, 0, 0.34);
+      }
+
+      .keeper-sticker {
+        right: 52px;
+        top: 248px;
+        z-index: 29;
+        width: 242px;
+        filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.48));
+      }
+      .keeper-sticker img {
+        display: block;
+        width: 100%;
+        height: auto;
+        image-rendering: pixelated;
+      }
+      .keeper-sticker.left {
+        left: 42px;
+        right: auto;
+      }
+
+      .death-stamp {
+        left: 50%;
+        top: 680px;
+        z-index: 33;
+        width: 330px;
+        height: 168px;
+        transform: translateX(-50%) rotate(-7deg);
+        display: grid;
+        place-items: center;
+        border: 7px solid rgba(217, 91, 79, 0.86);
+        color: #ff9b90;
+        font-family: "Kai V", serif;
+        font-size: 78px;
+        line-height: 1;
+        text-shadow: 0 0 18px rgba(217, 91, 79, 0.38);
+        background: rgba(58, 14, 12, 0.12);
+        box-shadow: 0 0 0 4px rgba(58, 14, 12, 0.46), 0 18px 52px rgba(0, 0, 0, 0.42);
+      }
+
+      .result-strip {
+        left: 74px;
+        right: 74px;
+        top: 168px;
+        z-index: 28;
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+      }
+      .result-strip span {
+        display: block;
+        padding: 12px 20px 14px;
+        border-radius: 999px;
+        border: 1.5px solid rgba(232, 180, 90, 0.18);
+        background: rgba(13, 10, 13, 0.7);
+        color: #f2f1ee;
+        font-size: 28px;
+        font-weight: 400;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .outro-shop {
+        position: absolute;
+        inset: 0;
+        z-index: 27;
+        overflow: hidden;
+        background:
+          radial-gradient(720px 520px at 50% 24%, rgba(232, 180, 90, 0.17), rgba(11, 10, 15, 0) 72%),
+          radial-gradient(700px 520px at 18% 82%, rgba(217, 91, 79, 0.12), rgba(11, 10, 15, 0) 72%),
+          #0b0a0f;
+      }
+      .outro-shop .small-sign {
+        position: absolute;
+        left: 96px;
+        top: 126px;
+        padding: 18px 30px 22px;
+        border: 3px solid #967143;
+        background: linear-gradient(180deg, #3a2512, #1b1209);
+        font-family: "Kai V", serif;
+        font-size: 54px;
+        color: #e8b45a;
+        box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.5), 0 18px 64px rgba(0, 0, 0, 0.52);
+      }
+      .ending-card {
+        left: 96px;
+        right: 96px;
+        top: 310px;
+        z-index: 32;
+        display: grid;
+        gap: 24px;
+        padding: 34px;
+        border: 1.5px solid rgba(232, 180, 90, 0.28);
+        border-radius: 26px;
+        background:
+          radial-gradient(520px 240px at 50% 0%, rgba(232, 180, 90, 0.13), rgba(11, 10, 15, 0)),
+          rgba(17, 13, 17, 0.84);
+        box-shadow: 0 28px 88px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 236, 183, 0.05);
+      }
+      .ending-card h2 {
+        margin: 0;
+        font-family: "FZYao V", "YaHei V", sans-serif;
+        font-size: 54px;
+        line-height: 1.18;
+        font-weight: 400;
+        color: #f3cf86;
+        text-align: center;
+      }
+      .ending-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+      .ending-options span {
+        display: grid;
+        place-items: center;
+        min-height: 82px;
+        border-radius: 18px;
+        border: 1.5px solid rgba(242, 241, 238, 0.12);
+        font-family: "FZYao V", "YaHei V", sans-serif;
+        font-size: 33px;
+        font-weight: 400;
+      }
+      .ending-options .good {
+        color: #b8f2ca;
+        background: rgba(127, 199, 155, 0.11);
+        border-color: rgba(127, 199, 155, 0.35);
+      }
+      .ending-options .flat {
+        color: #e5d7c1;
+        background: rgba(159, 149, 136, 0.11);
+        border-color: rgba(159, 149, 136, 0.32);
+      }
+      .ending-options .bad {
+        color: #ffb1a8;
+        background: rgba(217, 91, 79, 0.11);
+        border-color: rgba(217, 91, 79, 0.35);
+      }
+      .outro-shop .outro-keeper {
+        position: absolute;
+        left: 50%;
+        bottom: 410px;
+        width: 620px;
+        transform: translateX(-50%);
+        image-rendering: pixelated;
+        filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.6));
+      }
+      .outro-shop .outro-keeper.blink {
+        opacity: 0;
+      }
+      .outro-shop .outro-line {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        bottom: 210px;
+        color: #f2f1ee;
+        font-size: 40px;
+        line-height: 1.3;
+        text-align: center;
+        font-weight: 400;
+        text-shadow: 0 3px 16px rgba(0, 0, 0, 0.66);
+      }
+      .outro-shop .outro-line em {
+        font-family: "YaHei V", sans-serif;
+        font-style: normal;
+        color: #e8c16e;
+        font-weight: 700;
+      }
+
+      .lantern-flash {
+        inset: 0;
+        z-index: 60;
+        opacity: 0;
+        background: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="life-pawnshop-final"
+      data-composition-id="life-pawnshop-final"
+      data-start="0"
+      data-duration="50"
+      data-width="1080"
+      data-height="1920"
+    >
+      <video id="v-room" class="footage" src="assets/clips/keyed/main2-keyed.mp4" data-start="3" data-duration="5" data-media-start="3.5" data-track-index="1" muted playsinline></video>
+      <video id="v-pick-a" class="footage" src="assets/clips/keyed/main2-keyed.mp4" data-start="8" data-duration="4.5" data-media-start="9.6" data-track-index="1" muted playsinline></video>
+      <video id="v-pick-b" class="footage" src="assets/clips/keyed/main2-keyed.mp4" data-start="12.5" data-duration="3.5" data-media-start="20.6" data-track-index="1" muted playsinline></video>
+      <video id="v-fate" class="footage" src="assets/clips/keyed/main2-keyed.mp4" data-start="16" data-duration="4.5" data-media-start="23.3" data-track-index="1" muted playsinline></video>
+      <video id="v-pawn" class="footage" src="assets/clips/keyed/main2-keyed.mp4" data-start="20.5" data-duration="8.5" data-media-start="48.8" data-track-index="1" muted playsinline></video>
+      <div id="warning-scene" class="clip warning-scene" data-start="29" data-duration="3.5" data-track-index="1">
+        <div class="warning-plaque">掌柜提醒</div>
+        <img class="warning-keeper" src="assets/keeper-v7/r3c4-closed.png" alt="" />
+        <div class="warning-line">
+          <div>
+            <span>注意哦</span>
+            <strong>典当的东西，两个回合没买就归我啦</strong>
+          </div>
+        </div>
+      </div>
+      <video id="v-ending" class="footage" src="assets/clips/keyed/main2-keyed.mp4" data-start="32.5" data-duration="5.5" data-media-start="181.7" data-track-index="1" muted playsinline></video>
+      <img id="v-love" class="clip footage" src="assets/clips/keyed/love-still-clean.png" data-start="38" data-duration="4" data-track-index="1" alt="" />
+      <img id="v-career" class="clip footage" src="assets/clips/keyed/founder-still-clean.png" data-start="42" data-duration="4" data-track-index="1" alt="" />
+
+      <div id="shade" class="clip screen-shade" data-start="3" data-duration="43" data-track-index="2"></div>
+
+      <div id="opening" class="clip opening" data-start="0" data-duration="3" data-track-index="3">
+        <div class="shop-sign">
+          <div class="ropes"><i></i><i></i></div>
+          <div class="board"><span>人生当铺</span></div>
+        </div>
+        <img class="opening-keeper" src="assets/keeper-v7/r3c4-closed.png" alt="" />
+        <div class="counter">
+          <div class="ledger"></div>
+          <div class="stamp"></div>
+        </div>
+      </div>
+
+      <div id="c-open" class="clip soft-caption" data-layout-allow-occlusion data-start="0.25" data-duration="2.75" data-track-index="7">
+        欢迎光临<em>人生当铺</em>（眯眯眼）
+      </div>
+      <div id="c-room" class="clip soft-caption" data-layout-allow-occlusion data-start="3" data-duration="5" data-track-index="7">
+        和你的朋友们线上加入我的牌桌
+      </div>
+      <div id="c-pick" class="clip soft-caption" data-layout-allow-occlusion data-start="8" data-duration="8" data-track-index="7">
+        押上<em>7样</em>你最珍视的东西
+      </div>
+      <div id="c-fate" class="clip soft-caption" data-layout-allow-occlusion data-start="16" data-duration="4.5" data-track-index="7">
+        稀有牌暗拍，出价互相看不到哦
+      </div>
+      <div id="c-pawn" class="clip soft-caption danger" data-layout-allow-occlusion data-start="20.5" data-duration="4" data-track-index="7">
+        你会怎么抉择，典当还是硬扛
+      </div>
+      <div id="c-judge" class="clip soft-caption danger" data-layout-allow-occlusion data-start="24.5" data-duration="4.5" data-track-index="7">
+        判词我写下啦，哈哈，后悔药先备着
+      </div>
+      <div id="c-ending" class="clip soft-caption" data-layout-allow-occlusion data-start="32.5" data-duration="5.5" data-track-index="7">
+        让我看看大家活成了什么样
+      </div>
+      <div id="love-top" class="clip topic-caption love" data-layout-allow-occlusion data-start="38" data-duration="4" data-track-index="6">
+        爱情局 和对象玩 后果自负
+      </div>
+      <div id="c-love" class="clip soft-caption" data-layout-allow-occlusion data-start="38" data-duration="4" data-track-index="7">
+        想邀请谁一起光临我的当铺
+      </div>
+      <div id="career-top" class="clip topic-caption career" data-layout-allow-occlusion data-start="42" data-duration="4" data-track-index="6">
+        事业局 团建一起做做梦
+      </div>
+      <div id="c-career" class="clip soft-caption" data-layout-allow-occlusion data-start="42" data-duration="4" data-track-index="7">
+        想邀请谁一起光临我的当铺
+      </div>
+
+      <div id="keeper-pick" class="clip keeper-sticker" data-start="8" data-duration="8" data-track-index="8">
+        <img src="assets/keeper-v7/r1c3-smirk.png" alt="" />
+      </div>
+      <div id="keeper-pawn" class="clip keeper-sticker" data-start="20.5" data-duration="8.5" data-track-index="8">
+        <img src="assets/keeper-v7/r2c4-stamp.png" alt="" />
+      </div>
+      <div id="keeper-theme" class="clip keeper-sticker" data-start="38" data-duration="8" data-track-index="8">
+        <img src="assets/keeper-v7/r2c3-laugh.png" alt="" />
+      </div>
+
+      <div id="result-strip" class="clip result-strip" data-layout-allow-occlusion data-start="32.5" data-duration="5.5" data-track-index="10">
+        <span>人生结局</span>
+        <span>底牌清算</span>
+        <span>朋友排名</span>
+      </div>
+
+      <div id="outro" class="clip outro-shop" data-start="46" data-duration="4" data-track-index="11">
+        <div class="small-sign">人生当铺</div>
+        <div class="ending-card">
+          <h2>你这局会打出哪一种？</h2>
+          <div class="ending-options">
+            <span class="good">好结局</span>
+            <span class="flat">平结局</span>
+            <span class="bad">坏结局</span>
+          </div>
+        </div>
+        <img class="outro-keeper rest" src="assets/keeper-v7/r1c2-brow-chin-outro.png" alt="" />
+        <img class="outro-keeper blink" src="assets/keeper-v7/r3c4-closed.png" alt="" />
+        <div class="outro-line"><em>喜欢您来</em></div>
+      </div>
+
+      <audio id="bgm" src="assets/bgm-cut-thief-60.mp3" data-start="0" data-duration="50" data-track-index="50" data-volume="0.34"></audio>
+      <audio id="sfx-boss-open" src="assets/sfx/boss_A.mp3" data-start="0.34" data-duration="0.9" data-track-index="51" data-volume="0.58"></audio>
+      <audio id="sfx-lever" src="assets/sfx/n_lever.mp3" data-start="3.12" data-duration="0.31" data-track-index="51" data-volume="0.46"></audio>
+      <audio id="sfx-pick" src="assets/sfx/n_poof.mp3" data-start="8.1" data-duration="0.39" data-track-index="51" data-volume="0.44"></audio>
+      <audio id="sfx-pick-2" src="assets/sfx/n_poof.mp3" data-start="12.55" data-duration="0.39" data-track-index="52" data-volume="0.36"></audio>
+      <audio id="sfx-fate" src="assets/sfx/n_drain.mp3" data-start="16.1" data-duration="0.8" data-track-index="51" data-volume="0.44"></audio>
+      <audio id="sfx-boss-judge" src="assets/sfx/boss__praised.mp3" data-start="21.0" data-duration="1.2" data-track-index="51" data-volume="0.5"></audio>
+      <audio id="sfx-stamp" src="assets/sfx/n_lever.mp3" data-start="24.2" data-duration="0.31" data-track-index="52" data-volume="0.34"></audio>
+      <audio id="sfx-redeem" src="assets/sfx/n_poof.mp3" data-start="29.15" data-duration="0.39" data-track-index="51" data-volume="0.42"></audio>
+      <audio id="sfx-expire" src="assets/sfx/n_drain.mp3" data-start="29.35" data-duration="0.8" data-track-index="52" data-volume="0.48"></audio>
+      <audio id="sfx-ending" src="assets/sfx/sfx-1702.mp3" data-start="32.58" data-duration="2.7" data-track-index="51" data-volume="0.22"></audio>
+      <audio id="sfx-theme" src="assets/sfx/n_poof.mp3" data-start="38.08" data-duration="0.39" data-track-index="51" data-volume="0.4"></audio>
+      <audio id="sfx-theme-2" src="assets/sfx/n_poof.mp3" data-start="42.08" data-duration="0.39" data-track-index="51" data-volume="0.4"></audio>
+      <audio id="sfx-outro" src="assets/sfx/boss__done.mp3" data-start="46.2" data-duration="1.05" data-track-index="51" data-volume="0.52"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.from("#opening .shop-sign", { y: -50, opacity: 0, duration: 0.62, ease: "power3.out" }, 0.18);
+      tl.from("#opening .opening-keeper", { y: 42, scale: 0.96, opacity: 0, duration: 0.66, ease: "power2.out" }, 0.32);
+      tl.from("#opening .counter", { y: 56, opacity: 0, duration: 0.58, ease: "expo.out" }, 0.4);
+      tl.from("#c-open", { y: 28, scale: 0.985, opacity: 0, duration: 0.44, ease: "power2.out" }, 0.6);
+
+      [
+        ["#c-room", 3.18],
+        ["#c-pick", 8.18],
+        ["#c-fate", 16.18],
+        ["#c-pawn", 20.68],
+        ["#c-judge", 24.62],
+        ["#c-ending", 32.68],
+        ["#c-love", 38.18],
+        ["#c-career", 42.18]
+      ].forEach(([selector, at], index) => {
+        const eases = ["power2.out", "power3.out", "sine.out"];
+        tl.from(selector, { y: 30, opacity: 0, scale: 0.99, duration: 0.42, ease: eases[index % eases.length] }, at);
+      });
+
+      tl.from("#warning-scene .warning-plaque", { y: -24, opacity: 0, duration: 0.38, ease: "power2.out" }, 29.08);
+      tl.from("#warning-scene .warning-keeper", { y: 32, scale: 0.94, opacity: 0, duration: 0.46, ease: "power3.out" }, 29.16);
+      tl.from("#warning-scene .warning-line", { y: 24, opacity: 0, duration: 0.38, ease: "sine.out" }, 29.38);
+      tl.to("#warning-scene .warning-keeper", { x: -7, duration: 0.12, ease: "sine.inOut" }, 30.08);
+      tl.to("#warning-scene .warning-keeper", { x: 7, duration: 0.12, ease: "sine.inOut" }, 30.2);
+      tl.to("#warning-scene .warning-keeper", { x: 0, duration: 0.12, ease: "sine.inOut" }, 30.32);
+
+      tl.from("#love-top", { y: -28, opacity: 0, duration: 0.42, ease: "power2.out" }, 38.14);
+      tl.from("#career-top", { y: -28, opacity: 0, duration: 0.42, ease: "power2.out" }, 42.14);
+      tl.from("#keeper-pick", { x: 28, y: -12, scale: 0.94, opacity: 0, duration: 0.44, ease: "power2.out" }, 8.28);
+      tl.from("#keeper-pawn", { x: 24, scale: 0.9, opacity: 0, duration: 0.42, ease: "power3.out" }, 20.82);
+      tl.from("#keeper-theme", { y: -18, scale: 0.94, opacity: 0, duration: 0.44, ease: "power2.out" }, 38.22);
+
+      tl.from("#result-strip span", { y: -18, opacity: 0, stagger: 0.09, duration: 0.3, ease: "power2.out" }, 32.66);
+
+      tl.from("#outro .small-sign", { y: -32, opacity: 0, duration: 0.44, ease: "power2.out" }, 46.12);
+      tl.from("#outro .ending-card", { y: 38, scale: 0.98, opacity: 0, duration: 0.46, ease: "power2.out" }, 46.26);
+      tl.from("#outro .ending-options span", { y: 18, opacity: 0, stagger: 0.07, duration: 0.26, ease: "power2.out" }, 46.58);
+      tl.from("#outro .outro-keeper.rest", { y: 34, opacity: 0, scale: 0.96, duration: 0.46, ease: "power2.out" }, 46.72);
+      tl.from("#outro .outro-line", { y: 24, opacity: 0, duration: 0.34, ease: "sine.out" }, 47.0);
+      tl.to("#outro .outro-keeper.blink", { opacity: 1, duration: 0.05, ease: "steps(1)", immediateRender: false }, 48.34);
+      tl.to("#outro .outro-keeper.blink", { opacity: 0, duration: 0.05, ease: "steps(1)" }, 48.48);
+      tl.to("#outro .outro-keeper.blink", { opacity: 1, duration: 0.05, ease: "steps(1)" }, 49.14);
+      window.__timelines["life-pawnshop-final"] = tl;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+file 'segA.mp4'
+file 'segB.mp4'
+file 'segC.mp4'
+file 'segD.mp4'
+file 'segE.mp4'
+file 'segF.mp4'
