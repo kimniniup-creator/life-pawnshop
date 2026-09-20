@@ -1,4 +1,4 @@
-// AI 层 v1.2 —— 省用量原则：
+// AI 层 v1.3 —— 省用量原则：
 //   唯一走大模型的：终局人生小传 writeBios（串行队列，最多重试1次）
 //   老板点评 ownerLine / @老板搭腔 ownerChat：全部预制文案+模板插值，零调用零延迟
 //   机器人测试时设 LP_NO_AI=1 可连小传也不调用
@@ -111,27 +111,57 @@ async function ownerChat(ctx) {
 }
 
 // ── 唯一的模型调用：终局人生小传（串行，防并发） ──
-let biosRunning = false;
+let biosQueue = Promise.resolve();
+const GENDER_ASSUMPTION = /叔叔|阿姨|哥哥|姐姐|先生|女士|爸爸|妈妈|父亲|母亲|丈夫|妻子|老公|老婆|男朋友|女朋友|爷爷|奶奶|外公|外婆|儿子|女儿|男人|女人|男孩|女孩/;
+function neutralizeBio(text) {
+  return String(text)
+    .replace(/(?:叫|喊)(?:了)?你(?:一声)?(?:叔叔|阿姨|哥哥|姐姐)/g, '问你是谁')
+    .replace(/男朋友|女朋友|丈夫|妻子|老公|老婆/g, '伴侣')
+    .replace(/爸爸|妈妈|父亲|母亲/g, '家长')
+    .replace(/爷爷|奶奶|外公|外婆/g, '家中长辈')
+    .replace(/儿子|女儿|男孩|女孩/g, '孩子')
+    .replace(/叔叔|阿姨|先生|女士/g, '长辈')
+    .replace(/哥哥|姐姐/g, '手足')
+    .replace(/男人|女人/g, '人');
+}
 function rawAsk(prompt, timeoutMs, model) {
   return new Promise((resolve) => {
     let done = false;
     const finish = (v) => { if (!done) { done = true; resolve(v); } };
     try {
-      const args = ['-p', '--model', model || 'claude-sonnet-5'];
+      const args = [
+        '-p',
+        '--safe-mode',
+        '--no-session-persistence',
+        '--model', model || 'fable',
+      ];
       const env = { ...process.env };
       const localProxy = env.LP_PROXY || 'http://127.0.0.1:7897';
       env.HTTP_PROXY = env.HTTP_PROXY || env.http_proxy || localProxy;
       env.HTTPS_PROXY = env.HTTPS_PROXY || env.https_proxy || localProxy;
       env.ALL_PROXY = env.ALL_PROXY || env.all_proxy || localProxy;
       env.NO_PROXY = env.NO_PROXY || env.no_proxy || 'localhost,127.0.0.1,::1';
-      const child = spawn('claude', args, { shell: true, windowsHide: true, env });
+      const child = spawn(env.LP_CLAUDE_BIN || 'claude.exe', args, { windowsHide: true, env });
       let out = '';
-      const timer = setTimeout(() => { try { child.kill(); } catch (e) {} finish(null); }, timeoutMs);
+      let err = '';
+      const timer = setTimeout(() => {
+        try { child.kill(); } catch (e) {}
+        console.error(`[bios] Claude timed out after ${timeoutMs}ms`);
+        finish(null);
+      }, timeoutMs);
       child.stdout.on('data', (d) => { out += d.toString(); });
-      child.on('error', () => { clearTimeout(timer); finish(null); });
-      child.on('close', () => {
+      child.stderr.on('data', (d) => { err += d.toString(); });
+      child.on('error', (e) => {
+        clearTimeout(timer);
+        console.error(`[bios] Claude failed to start: ${e.message}`);
+        finish(null);
+      });
+      child.on('close', (code) => {
         clearTimeout(timer);
         const text = out.trim();
+        if (code !== 0 || !text) {
+          console.error(`[bios] Claude exited ${code}: ${err.trim().slice(0, 500) || 'empty response'}`);
+        }
         finish(text.length > 0 ? text : null);
       });
       child.stdin.write(prompt, 'utf8');
@@ -145,16 +175,7 @@ function rawAsk(prompt, timeoutMs, model) {
 async function writeBios(deck, players, endings) {
   const deckName = deck.name;
   const stages = deck.stages;
-  const fallback = () => {
-    const bios = {};
-    for (const p of players) {
-      const e = endings[p.id] || {};
-      const kept = p.hand.slice(0, 3).map((c) => `「${c}」`).join('、');
-      bios[p.name] = `${e.line || ''}${kept ? `走到最后，${kept}还握在你手里。` : '走到最后，你两手空空，但你走完了。'}${e.title ? `这一局，你的结局叫「${e.title}」。` : ''}`;
-    }
-    return bios;
-  };
-  if (process.env.LP_NO_AI) return fallback();
+  if (process.env.LP_NO_AI) return null;
 
   const mark = (c) => (deck.qualities.includes(c) ? `「${c}」` : `「${c}」(TA自己写上桌的)`);
   const lines = players.map((p) => {
@@ -163,12 +184,31 @@ async function writeBios(deck, players, endings) {
     const lost = p.pawned.filter((x) => !x.redeemed).map((x) => `${mark(x.card)}(失于${stages[x.stage]})`).join('、') || '无';
     const back = p.pawned.filter((x) => x.redeemed).map((x) => mark(x.card)).join('、') || '无';
     const traded = (p.traded || []).map((x) => `${mark(x.card)}(换了「${x.op}」)`).join('、') || '无';
+    const timeline = (p.timeline || []).map((item) => {
+      const when = item.stage >= 0 ? (stages[item.stage] || `第${item.stage + 1}阶段`) : '故事开始前';
+      if (item.kind === 'rewrite') {
+        const cards = (item.cards || []).map(mark).join('、') || '重要的东西';
+        return `${when}：【命运已改写】原本可能发生“${item.event}”，但TA失去${cards}作为代价，原事件没有按原样发生。必须另写一个符合TA其余人生、保留同类压力与后果的新版本`;
+      }
+      if (item.kind === 'endure') {
+        return `${when}：【真实发生】TA经历了“${item.event}”，并为此损耗了${item.resource}`;
+      }
+      if (item.kind === 'op-take') {
+        return `${when}：【抓住机遇】TA失去${(item.cards || []).map(mark).join('、')}，让“${item.event}”真实改变了往后的人生`;
+      }
+      if (item.kind === 'op-pass') return `${when}：【放过机遇】“${item.event}”出现过，但TA没有走上那条路`;
+      if (item.kind === 'averted') return `${when}：【事件被避开】“${item.event}”没有发生，不得写成真实经历`;
+      if (item.kind === 'redeem') return `${when}：【后来找回】TA以新的方式重新拥有${(item.cards || []).map(mark).join('、')}；这不会让此前被改写的事件重新发生`;
+      return `${when}：${item.text}`;
+    }).join('；') || '无额外记录';
     const brokenLine = (p.broken || []).map((b) => {
       const r = deck.resources.find((x) => x.id === b.res);
       return r ? `${stages[b.stage]}时${r.name}崩了(${r.zero})` : '';
     }).filter(Boolean).join('；') || '无';
-    return `【${p.name}】结局档位：${e.title || '未知'}（${e.tier || 'mid'}）
-素材——一直握着的：${kept}｜永远失去的：${lost}｜失而复得的：${back}｜拿去换机遇的：${traded}｜硬受下的遭遇：${p.scars.map((s) => `「${s}」`).join('、') || '无'}｜崩局：${brokenLine}`;
+    const resources = deck.resources.map((r) => `${r.name}${p.res ? p.res[r.id] : 0}`).join('、');
+    return `【${p.name}】结局：${e.title || '未知'}｜成就：${e.ach || '无'}｜结局形状：${e.profile || e.tier || 'mid'}｜叙事语气：${e.tier || 'mid'}
+时间线——${timeline}
+终局账本——一直握着的：${kept}｜永远失去的：${lost}｜失而复得的：${back}｜拿去换机遇的：${traded}｜硬受下的遭遇：${p.scars.map((s) => `「${s}」`).join('、') || '无'}｜崩局：${brokenLine}｜最终资源：${resources}｜猜中朋友：${p.guessRight || 0}次｜共鸣：${p.resonance || 0}`;
   }).join('\n\n');
 
   const prompt = `你是卡牌游戏《人生当铺》里的当铺老板：五十来岁，见过太多人把最珍视的东西放上柜台。游戏结束了，你要给每位玩家写一段"人生小传"（主题:${deckName}）。素材：
@@ -177,29 +217,38 @@ ${lines}
 
 写作要求（重要）：
 1. **虚构一个具体的人生故事，禁止复述游戏操作**。不许出现"典当""赎回""牌""当铺""游戏""选择了"这类词。把素材化成真实人生的画面。
-2. 给每个人一两个有镜头感的细节场景（一个下午、一件旧物、一句没说出口的话）。
-3. 时间感完整：从${stages[0]}走到${stages[stages.length - 1]}，像一部微缩传记。
-4. 好的和坏的都写；语气对齐结局档位：good=温暖有光，mid=悲欣交集，bad=克制的疼。
-5. 每人切入角度不同，句式不许雷同。每人130-180字，第二人称"你"，最后一句是只属于TA的判词。
+2. 严格沿时间线写，从${stages[0]}自然走到${stages[stages.length - 1]}。前一阶段的得失必须成为后一阶段的原因，写成一条有因果、有回响的人生，不要把素材逐项罗列。
+3. 每人至少写三个有镜头感的具体场景：地点、动作、旧物或一句没说出口的话。允许合理补充职业、关系和生活细节，但不得违背账本。
+4. 留住、失去、失而复得、硬扛和抓住/放过的机遇都要转化成故事里的真实事件；最终资源是晚年处境，不要直接报数字。
+5. **严格区分“真实发生”和“命运已改写”**：硬扛的原事件确实发生过；典当所对应的原事件只是本来可能发生的命运，已经被代价换走，禁止把它原样写进小传。你必须依据TA失去与保留的品质、前后经历和主题，另写一个只属于这个玩家的替代版本：保留相近的人生压力和因果重量，但关键事实、场景与结果都不能照抄原事件。后来找回品质，只能写成TA以新的方式重新拥有它，不能让被改写的旧事件倒过来发生。
+6. 好的和坏的都写；语气对齐结局档位：good=温暖有光，mid=悲欣交集，bad=克制的疼。不要鸡汤，不要强行圆满。
+7. 每人切入角度、职业和关键关系都不同，句式不许雷同。每人320-480个汉字，第二人称"你"，分成3-4个短段落，最后一句是只属于TA的判词。
+8. **不得替玩家假定性别、性别身份、称谓或伴侣性别**。素材没有提供这些信息。叙述玩家只能用“你”，关系角色使用“伴侣、爱人、家人、孩子、晚辈、长辈、同事、朋友”等中性词；禁止把玩家写成叔叔、阿姨、哥哥、姐姐、先生、女士、父亲、母亲、丈夫、妻子等身份。
 只输出严格的JSON对象，键是玩家名，值是小传文本，不要markdown代码块，不要任何其他文字。`;
 
-  if (biosRunning) return fallback(); // 同一时刻只允许一份小传在生成
-  biosRunning = true;
-  try {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      const text = await rawAsk(prompt, 100000, 'claude-sonnet-5');
-      if (text) {
-        try {
-          const cleaned = text.replace(/^```(json)?/m, '').replace(/```\s*$/m, '').trim();
-          const obj = JSON.parse(cleaned.slice(cleaned.indexOf('{'), cleaned.lastIndexOf('}') + 1));
-          if (players.every((p) => typeof obj[p.name] === 'string' && obj[p.name].length > 0)) return obj;
-        } catch (e) { /* retry */ }
+  const generate = async () => {
+    const model = process.env.LP_CLAUDE_MODEL || 'fable';
+    const timeoutMs = Number(process.env.LP_BIOS_TIMEOUT) || 150000;
+    const text = await rawAsk(prompt, timeoutMs, model);
+    if (text) {
+      try {
+        const cleaned = text.replace(/^```(json)?/m, '').replace(/```\s*$/m, '').trim();
+        const obj = JSON.parse(cleaned.slice(cleaned.indexOf('{'), cleaned.lastIndexOf('}') + 1));
+        players.forEach((p) => {
+          if (typeof obj[p.name] === 'string') obj[p.name] = neutralizeBio(obj[p.name]);
+        });
+        if (players.every((p) => typeof obj[p.name] === 'string' && obj[p.name].length >= 220 && !GENDER_ASSUMPTION.test(obj[p.name]))) return obj;
+        console.error('[bios] Fable returned incomplete or gender-assumptive biographies');
+      } catch (e) {
+        console.error(`[bios] Invalid JSON from Fable: ${e.message}`);
       }
     }
-  } finally {
-    biosRunning = false;
-  }
-  return fallback();
+    return null;
+  };
+
+  const queued = biosQueue.then(generate, generate);
+  biosQueue = queued.then(() => undefined, () => undefined);
+  return queued;
 }
 
-module.exports = { ownerLine, ownerChat, writeBios };
+module.exports = { ownerLine, ownerChat, writeBios, neutralizeBio };
